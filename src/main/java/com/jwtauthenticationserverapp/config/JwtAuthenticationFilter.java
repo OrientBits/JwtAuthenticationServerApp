@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -28,33 +29,39 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         //get jwt or header
-        String requestTokenHeader = request.getHeader("Authorization");
+        String requestTokenHeader = request.getHeader("authorization");
         String username = null;
         String jwtToken = null;
+        System.out.println("Jwt Auth Filter running....");
+        System.out.println(requestTokenHeader);
 
-        if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")){
+
+        if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
             jwtToken = requestTokenHeader.substring(7);
-            try{
+            try {
                 username = this.jwtUtil.extractUsername(jwtToken);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null){
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = this.customUserDetailService.loadUserByUsername(username);
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-
-            }else{
+                System.out.println("Token is validated....");
+            } else {
                 System.out.println("Token is not validated....");
             }
+
+        }else{
+            System.out.println("filter requestTokenHeader else part");
+
         }
 
 
-        filterChain.doFilter(request,response);
-
+        filterChain.doFilter(request, response);
 
     }
 
