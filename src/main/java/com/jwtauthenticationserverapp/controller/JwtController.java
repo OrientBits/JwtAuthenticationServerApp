@@ -1,5 +1,6 @@
 package com.jwtauthenticationserverapp.controller;
 
+import com.jwtauthenticationserverapp.entities.User;
 import com.jwtauthenticationserverapp.service.CustomUserDetailService;
 import com.jwtauthenticationserverapp.helper.JwtUtil;
 import com.jwtauthenticationserverapp.model.JwtRequest;
@@ -32,8 +33,6 @@ public class JwtController{
     @PostMapping("/token")
     public ResponseEntity<?> generateToken(@RequestBody JwtRequest jwtRequest) throws Exception {
 
-        System.out.println(jwtRequest);
-
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(jwtRequest.getUsername(),jwtRequest.getPassword()));
             System.out.println("Hello Darling");
@@ -51,5 +50,6 @@ public class JwtController{
 
         return ResponseEntity.ok(new JwtResponse(token));
     }
+
 
 }

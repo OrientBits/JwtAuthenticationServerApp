@@ -1,12 +1,18 @@
 package com.jwtauthenticationserverapp.controller;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.jwtauthenticationserverapp.entities.User;
+import com.jwtauthenticationserverapp.model.JwtRequest;
+import com.jwtauthenticationserverapp.repo.UserRepository;
+import com.jwtauthenticationserverapp.service.CustomUserDetailService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin (origins = "*")
 public class Home {
+
+    @Autowired
+    CustomUserDetailService customUserDetailService;
 
     @GetMapping("/welcome")
     public String welcome(){
@@ -14,9 +20,11 @@ public class Home {
     }
 
     @GetMapping("/getusers")
-    public String getUser(){
+    public User getUser(){
         System.out.println("Get User");
-        return "{\"name\":\"OrientBits\"}";
+
+
+        return customUserDetailService.user;
     }
 
 }
